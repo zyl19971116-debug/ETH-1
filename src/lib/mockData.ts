@@ -7,11 +7,11 @@ export interface GlobalStats {
 }
 
 export const globalStats: GlobalStats = {
-  humans: 12481,
-  memories: 38291,
-  fears: 17420,
-  beliefs: 21932,
-  dreams: 9281,
+  humans: 0,
+  memories: 0,
+  fears: 0,
+  beliefs: 0,
+  dreams: 0,
 };
 
 export const questions = [
