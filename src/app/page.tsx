@@ -1,7 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import ThreeHead from "@/components/ThreeHead";
+import dynamic from "next/dynamic";
+const ThreeHead = dynamic(() => import("@/components/ThreeHead"), { ssr: false });
 import StatsCounter from "@/components/StatsCounter";
 import { globalStats } from "@/lib/mockData";
 import Link from "next/link";

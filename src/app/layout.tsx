@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Space_Grotesk, Roboto_Mono, Syncopate } from "next/font/google";
 import "@/styles/globals.css";
 import Navbar from "@/components/Navbar";
@@ -26,8 +26,10 @@ const robotoMono = Roboto_Mono({
 export const metadata: Metadata = {
   title: "HUMAN//ONE | ONE MIND. MILLIONS OF HUMANS.",
   description: "A collective AI personality shaped by humanity. Contribute your memory, fear, love, and dreams.",
-  viewport: "width=device-width, initial-scale=1, maximum-scale=1",
+
 };
+
+export const viewport: Viewport = { width: "device-width", initialScale: 1 };
 
 export default function RootLayout({
   children,
