@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import dynamic from "next/dynamic";
+import SceneBoundary from "@/components/SceneBoundary";
 const ThreeHead = dynamic(() => import("@/components/ThreeHead"), { ssr: false });
 import StatsCounter from "@/components/StatsCounter";
 import { globalStats } from "@/lib/mockData";
@@ -13,7 +14,7 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative h-screen flex flex-col items-center justify-center pt-20">
         <div className="absolute inset-0 z-0">
-          <ThreeHead />
+          <SceneBoundary><ThreeHead /></SceneBoundary>
         </div>
 
         <div className="relative z-10 flex flex-col items-center text-center px-6">
