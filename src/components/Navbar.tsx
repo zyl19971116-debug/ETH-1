@@ -37,7 +37,7 @@ export default function Navbar() {
     <nav
       className={cn(
         "fixed top-0 left-0 w-full z-50 transition-all duration-500 py-5 px-4 sm:px-6 xl:px-12 flex items-center justify-between",
-        scrolled ? "bg-black/50 backdrop-blur-md py-4" : "bg-transparent"
+        scrolled ? "bg-black/95 backdrop-blur-md py-4" : "bg-transparent"
       )}
     >
       <Link href="/" className="group flex items-center gap-2 sm:gap-4">

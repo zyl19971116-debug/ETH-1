@@ -79,3 +79,23 @@ body {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* Human Core uses the same monochrome instrument language as the main site. */
+.core-invitation::before {
+  content: ''; position: absolute; inset: 0; pointer-events: none; opacity: .35;
+  background-image: linear-gradient(#ffffff06 1px, transparent 1px), linear-gradient(90deg, #ffffff06 1px, transparent 1px);
+  background-size: 80px 80px;
+  mask-image: linear-gradient(90deg, transparent, black);
+}
+.core-schematic { background: radial-gradient(circle, #ffffff07, transparent 65%); }
+.core-schematic::before, .core-schematic::after { content: ''; position: absolute; background: #ffffff12; }
+.core-schematic::before { top: 50%; width: 100%; height: 1px; }
+.core-schematic::after { left: 50%; height: 100%; width: 1px; }
+.core-orbit { position: absolute; inset: 9%; border: 1px solid #ffffff25; border-radius: 50%; }
+.core-orbit-one { transform: rotate(-35deg) scaleY(.48); }
+.core-orbit-two { transform: rotate(45deg) scaleY(.65); border-style: dashed; }
+.core-orbit-three { inset: 21%; border-color: #ffffff45; }
+.core-nucleus { position: absolute; inset: 28%; border-radius: 50%; background-image: radial-gradient(#ffffff65 .7px, transparent 1px); background-size: 7px 7px; mask-image: radial-gradient(circle, black 20%, transparent 72%); }
+.core-observatory::after { content: ''; position: absolute; inset: 16px; pointer-events: none; background: linear-gradient(white,white) left top/14px 1px no-repeat, linear-gradient(white,white) left top/1px 14px no-repeat, linear-gradient(white,white) right bottom/14px 1px no-repeat, linear-gradient(white,white) right bottom/1px 14px no-repeat; opacity: .25; }
+@media (prefers-reduced-motion: no-preference) { .core-nucleus { animation: core-drift 45s linear infinite; } }
+@keyframes core-drift { to { transform: rotate(360deg); } }

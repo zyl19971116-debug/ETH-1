@@ -32,8 +32,8 @@ export default function CoreField({ hue, energy, pulse, paused }: { hue: number;
       ctx!.clearRect(0,0,w,h);
       const radius=Math.min(w*.33,h*.34,280);
       const glow=ctx!.createRadialGradient(w/2,h/2,0,w/2,h/2,radius*1.8);
-      glow.addColorStop(0,`hsla(${smoothHue},60%,40%,.12)`);glow.addColorStop(1,'transparent');ctx!.fillStyle=glow;ctx!.fillRect(0,0,w,h);
-      ctx!.strokeStyle=`hsla(${smoothHue},40%,70%,.12)`;ctx!.lineWidth=.6;
+      glow.addColorStop(0,`hsla(${smoothHue},12%,70%,.055)`);glow.addColorStop(1,'transparent');ctx!.fillStyle=glow;ctx!.fillRect(0,0,w,h);
+      ctx!.strokeStyle=`hsla(${smoothHue},10%,85%,.16)`;ctx!.lineWidth=.6;
       for(let ring=0;ring<3;ring++){ctx!.beginPath();ctx!.ellipse(w/2,h/2,radius*(1.17+ring*.15),radius*(.28+ring*.05),time*.08+ring*.7,0,Math.PI*2);ctx!.stroke();}
       const angle=time*(.12+smoothEnergy*.13)+pointer.x*.25;
       const projected=particles.map(p=>{
@@ -43,7 +43,7 @@ export default function CoreField({ hue, energy, pulse, paused }: { hue: number;
         const scale=2.8/(2.8-z);
         return {x:w/2+x*r*scale,y:h/2+(p.y+Math.sin(time+p.seed)*smoothEnergy*.025)*r*scale+pointer.y*z*20,z,scale};
       }).sort((a,b)=>a.z-b.z);
-      for(const p of projected){ctx!.fillStyle=`hsla(${smoothHue},${35+smoothEnergy*45}%,${65+p.z*20}%,${.15+(p.z+1)*.32})`;ctx!.beginPath();ctx!.arc(p.x,p.y,Math.max(.4,p.scale*(.65+smoothEnergy*.35)),0,Math.PI*2);ctx!.fill();}
+      for(const p of projected){ctx!.fillStyle=`hsla(${smoothHue},${8+smoothEnergy*12}%,${65+p.z*20}%,${.15+(p.z+1)*.32})`;ctx!.beginPath();ctx!.arc(p.x,p.y,Math.max(.4,p.scale*(.65+smoothEnergy*.35)),0,Math.PI*2);ctx!.fill();}
     }
     resize();frame=requestAnimationFrame(draw);
     return()=>{cancelAnimationFrame(frame);observer.disconnect();el.removeEventListener('pointermove',move);};
