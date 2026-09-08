@@ -18,7 +18,7 @@ const navLinks = [
   { name: "CONTRIBUTE", href: "/contribute" },
   { name: "COLLECTIVE", href: "/collective" },
   { name: "THE MIND", href: "/mind" },
-  { name: "TALK", href: "/talk" },
+  { name: "THE CORE", href: "/talk" },
 ];
 
 export default function Navbar() {

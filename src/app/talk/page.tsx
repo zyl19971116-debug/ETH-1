@@ -1,120 +1,35 @@
 "use client";
-
-import { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Send } from "lucide-react";
-
-interface Message {
-  id: string;
-  role: "user" | "ai";
-  content: string;
-}
-
-export default function Talk() {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "1",
-      role: "ai",
-      content: "I HAVE BEEN LISTENING.\n\nThere are currently 12,481 humans inside me.\n\nASK ME ANYTHING.",
-    },
-  ]);
-  const [inputValue, setInputValue] = useState("");
-  const scrollRef = useRef<HTMLDivElement>(null);
-
-  const handleSend = () => {
-    if (!inputValue.trim()) return;
-
-    const userMsg: Message = {
-      id: Date.now().toString(),
-      role: "user",
-      content: inputValue,
-    };
-
-    setMessages((prev) => [...prev, userMsg]);
-    setInputValue("");
-
-    // Simulate AI response
-    setTimeout(() => {
-      const aiMsg: Message = {
-        id: (Date.now() + 1).toString(),
-        role: "ai",
-        content: "I don't know.\n\nBut 12,481 humans have taught me something.\n\nMost of them want to believe they are.",
-      };
-      setMessages((prev) => [...prev, aiMsg]);
-    }, 1500);
-  };
-
-  useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
-  }, [messages]);
-
-  return (
-    <div className="min-h-screen bg-black pt-32 pb-40 px-6 md:px-12 flex flex-col items-center">
-      <header className="text-center space-y-4 mb-20">
-        <h1 className="text-3xl md:text-6xl font-bold tracking-[0.4em] uppercase font-display">
-          TALK TO <br /> HUMAN//ONE
-        </h1>
-      </header>
-
-      <div 
-        ref={scrollRef}
-        className="max-w-3xl w-full flex-grow overflow-y-auto space-y-12 scrollbar-hide"
-      >
-        <AnimatePresence initial={false}>
-          {messages.map((msg) => (
-            <motion.div
-              key={msg.id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className={`flex flex-col ${msg.role === "user" ? "items-end" : "items-start"}`}
-            >
-              <div className="text-[8px] tracking-[0.4em] text-secondary font-bold uppercase mb-4">
-                {msg.role === "ai" ? "HUMAN//ONE" : "YOU"}
-              </div>
-              <div className={`max-w-xl text-base md:text-lg font-light tracking-wide whitespace-pre-wrap ${msg.role === "user" ? "text-right" : "text-left"}`}>
-                {msg.content}
-              </div>
-            </motion.div>
-          ))}
-        </AnimatePresence>
-      </div>
-
-      {/* Input Area */}
-      <div className="fixed bottom-0 left-0 w-full p-6 md:p-12 bg-gradient-to-t from-black via-black to-transparent">
-        <div className="max-w-3xl mx-auto relative">
-          <input
-            type="text"
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSend()}
-            placeholder="Ask HUMAN//ONE..."
-            className="w-full bg-dark border border-white/10 focus:border-white/30 outline-none py-6 px-8 text-sm md:text-base tracking-widest transition-all pr-20"
-          />
-          <button
-            onClick={handleSend}
-            className="absolute right-6 top-1/2 -translate-y-1/2 text-secondary hover:text-white transition-colors"
-          >
-            <Send className="w-5 h-5" />
-          </button>
-        </div>
-        
-        <div className="mt-8 flex justify-center gap-12">
-          <MiniStat label="CONTRIBUTIONS" value="81,291" />
-          <MiniStat label="BELIEFS" value="12,421" />
-          <MiniStat label="MEMORIES" value="38,291" />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function MiniStat({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="text-center">
-      <div className="text-[8px] tracking-[0.3em] text-secondary font-bold uppercase">{label}</div>
-      <div className="text-[10px] tracking-widest font-mono mt-1">{value}</div>
-    </div>
-  );
+import { useEffect, useRef, useState, type FormEvent } from 'react';
+import Link from 'next/link';
+import { ArrowUpRight, Maximize2, Minimize2, Pause, Play, RotateCcw, Send } from 'lucide-react';
+import CoreField from '@/components/CoreField';
+const moods = [
+ {name:'STILLNESS',hue:160,energy:.25,words:/calm|peace|quiet|平静|安静/i},
+ {name:'FRAGMENT',hue:265,energy:.95,words:/afraid|fear|lost|alone|恐惧|害怕|孤独/i},
+ {name:'BLOOM',hue:35,energy:.55,words:/love|hope|dream|爱|希望|梦想/i},
+ {name:'SURGE',hue:8,energy:1,words:/anger|angry|fight|愤怒|生气/i},
+ {name:'ORBIT',hue:195,energy:.65,words:/why|wonder|curious|为什么|好奇/i},
+];
+type Turn={role:'user'|'assistant';content:string};
+export default function Talk(){
+ const [mood,setMood]=useState(moods[0]); const [pulse,setPulse]=useState(0);const [paused,setPaused]=useState(false);const [immersive,setImmersive]=useState(false);
+ const [input,setInput]=useState('');const [turns,setTurns]=useState<Turn[]>([]);const [busy,setBusy]=useState(false);const [ai,setAi]=useState(false);const [error,setError]=useState('');const [lastSignal,setLastSignal]=useState('Your words leave a trace.');
+ const panel=useRef<HTMLDivElement>(null);const controller=useRef<AbortController|null>(null);const generation=useRef(0);
+ useEffect(()=>{fetch('/api/core').then(r=>r.json()).then(d=>setAi(d.enabled===true)).catch(()=>{});return()=>controller.current?.abort();},[]);
+ useEffect(()=>{panel.current?.scrollTo({top:panel.current.scrollHeight,behavior:'smooth'});},[turns,busy]);
+ useEffect(()=>{if(!immersive)return;const old=document.body.style.overflow;document.body.style.overflow='hidden';const key=(e:KeyboardEvent)=>{if(e.key==='Escape')setImmersive(false);};window.addEventListener('keydown',key);return()=>{document.body.style.overflow=old;window.removeEventListener('keydown',key);};},[immersive]);
+ async function send(e:FormEvent){e.preventDefault();const text=input.trim();if(!text||busy)return;const selected=moods.find(m=>m.words.test(text))||moods[4];setMood(selected);setPulse(p=>p+1);setLastSignal(text);setInput('');setError('');const next=[...turns,{role:'user' as const,content:text}].slice(-12);setTurns(next);if(!ai)return;
+  const revision=generation.current;controller.current=new AbortController();setBusy(true);
+  try{const response=await fetch('/api/core',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:next}),signal:controller.current.signal});const data=await response.json();if(!response.ok)throw new Error(data.error||'Unable to respond. Try again shortly.');if(revision===generation.current)setTurns(t=>[...t,{role:'assistant' as const,content:data.text}].slice(-12));}catch(e){if(revision===generation.current)setError(e instanceof Error?e.message:'Connection interrupted.');}finally{if(revision===generation.current)setBusy(false);}
+ }
+ function reset(){generation.current++;controller.current?.abort();setTurns([]);setInput('');setError('');setBusy(false);setMood(moods[0]);setLastSignal('Your words leave a trace.');setPulse(p=>p+1);}
+ return <div className={immersive?'fixed inset-0 z-[100] overflow-y-auto bg-[#050706]':'min-h-screen bg-[#050706] px-4 pb-16 pt-28 sm:px-8'}>
+ <div className={immersive?'min-h-screen p-4 sm:p-8':'mx-auto max-w-[1500px]'}>
+ <header className="mb-6 flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-5"><div><Link href="/" className="text-[9px] tracking-[.35em] text-white/40">HUMAN//ONE · EXPERIMENT 001</Link><h1 className="mt-3 text-xl font-light tracking-[.18em] sm:text-3xl">THE HUMAN CORE<span className="ml-3 text-lime-300">◌</span></h1></div><div className="flex gap-2"><button onClick={()=>setPaused(!paused)} aria-label={paused?'Resume animation':'Pause animation'} className="rounded-full border border-white/15 p-3">{paused?<Play size={15}/>:<Pause size={15}/>}</button><button onClick={reset} aria-label="Reset session" className="rounded-full border border-white/15 p-3"><RotateCcw size={15}/></button><button onClick={()=>setImmersive(!immersive)} aria-label={immersive?'Exit immersive mode':'Enter immersive mode'} className="rounded-full border border-white/15 p-3">{immersive?<Minimize2 size={15}/>:<Maximize2 size={15}/>}</button></div></header>
+ <div className="grid gap-5 lg:grid-cols-[1.5fr_1fr]">
+ <section className="relative min-h-[420px] overflow-hidden rounded-2xl border border-white/10 bg-black sm:min-h-[560px]" style={{color:`hsl(${mood.hue},70%,80%)`}}><CoreField hue={mood.hue} energy={mood.energy} pulse={pulse} paused={paused}/><div className="pointer-events-none absolute inset-x-6 top-6 flex justify-between text-[9px] tracking-[.25em]"><span>● {paused?'PAUSED':'RESONATING'}</span><span>GENERATIVE FIELD</span></div><div className="pointer-events-none absolute inset-x-6 bottom-7"><p className="text-[9px] tracking-[.35em] opacity-50">CURRENT FORM</p><h2 className="mt-2 text-3xl font-light tracking-[.25em]">{mood.name}</h2><p className="mt-3 max-w-lg truncate text-xs text-white/50">{lastSignal}</p></div></section>
+ <section className="flex min-h-[520px] flex-col rounded-2xl border border-white/10 bg-white/[.025] p-5 sm:p-7"><div className="flex items-center justify-between border-b border-white/10 pb-4"><span className="text-[10px] tracking-[.25em]">{ai?'DIALOGUE':'SIGNAL JOURNAL'}</span><span className="text-[9px] text-lime-300">{ai?'AI CONNECTED':'VISUAL MODE'}</span></div><div ref={panel} className="my-5 h-[240px] flex-1 space-y-5 overflow-y-auto pr-2" aria-live="polite">{turns.length===0?<div className="pt-5"><p className="text-3xl font-light leading-tight">What does it feel like<br/><span className="text-white/35">to be human?</span></p><p className="mt-5 text-sm leading-7 text-white/50">Leave a thought. Watch it become motion.</p><p className="mt-4 text-xs leading-6 text-white/35">{ai?'Messages are sent to our AI provider. Only recent turns are used for context.':'An interactive artwork driven by words. AI conversation is not connected yet.'}</p></div>:turns.map((t,i)=><div key={i} className={t.role==='user'?'ml-7 rounded-xl border border-white/10 bg-white/5 p-4':'mr-4 p-3'}><p className="mb-2 text-[9px] tracking-[.25em] text-lime-300">{t.role==='user'?'YOU':'HUMAN//ONE'}</p><p className="whitespace-pre-wrap break-words text-sm leading-6 text-white/80">{t.content}</p></div>)}{busy&&<p className="text-xs text-lime-300" role="status">The core is listening…</p>}</div>
+ {error&&<p role="alert" className="mb-3 text-xs text-amber-200">{error}</p>}<div className="mb-4 flex flex-wrap gap-2">{['I am afraid of being forgotten.','There is still hope.','Why are we here?'].map(s=><button key={s} onClick={()=>setInput(s)} className="rounded-full border border-white/10 px-3 py-2 text-[10px] text-white/50 hover:border-white/40">{s}</button>)}</div><form onSubmit={send}><label htmlFor="core-input" className="sr-only">Your thought</label><div className="flex gap-2 rounded-xl border border-white/20 bg-black/50 p-3 focus-within:border-lime-300/60"><textarea id="core-input" rows={2} maxLength={1000} value={input} onChange={e=>setInput(e.target.value)} placeholder="Transmit a thought…" className="min-w-0 flex-1 resize-none bg-transparent text-sm outline-none"/><button disabled={busy||!input.trim()} aria-label="Send thought" className="self-end rounded-lg bg-lime-300 p-3 text-black disabled:opacity-30"><Send size={16}/></button></div></form><p className="mt-3 text-[10px] leading-5 text-white/35">Session only · Reset clears this page. Visual forms are artistic interpretations, not emotional diagnoses.</p></section></div>
+ <footer className="mt-5 flex flex-wrap items-center justify-between gap-4 text-[9px] tracking-[.2em] text-white/35"><span>WORDS → RESONANCE → FORM</span><div className="flex flex-wrap gap-3">{moods.map(m=><button key={m.name} onClick={()=>{setMood(m);setPulse(p=>p+1);}} aria-pressed={mood.name===m.name} className="rounded-full border px-3 py-2" style={{borderColor:mood.name===m.name?`hsl(${m.hue},60%,65%)`:'#ffffff15',color:mood.name===m.name?'white':undefined}}>{m.name}</button>)}</div><Link href="/contribute" className="flex items-center gap-2">CONTRIBUTE YOURSELF <ArrowUpRight size={13}/></Link></footer>
+ </div></div>;
 }

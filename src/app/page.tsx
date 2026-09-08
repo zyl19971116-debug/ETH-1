@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import dynamic from "next/dynamic";
 import SceneBoundary from "@/components/SceneBoundary";
 const ThreeHead = dynamic(() => import("@/components/ThreeHead"), { ssr: false });
+import TokenPanel from "@/components/TokenPanel";
 import StatsCounter from "@/components/StatsCounter";
 import { globalStats } from "@/lib/mockData";
 import Link from "next/link";
@@ -81,6 +82,13 @@ export default function Home() {
         </div>
       </section>
 
+      <TokenPanel />
+      <section className="relative overflow-hidden border-b border-white/10 bg-[#080d0b] px-6 py-24 md:px-12">
+        <div className="mx-auto grid max-w-7xl items-center gap-12 md:grid-cols-[1.3fr_1fr]">
+          <div><p className="mb-6 text-[10px] tracking-[.4em] text-lime-300">NEW EXPERIENCE / 001</p><h2 className="text-4xl font-light tracking-tight md:text-6xl">A thought.<br/><span className="text-white/40">A living form.</span></h2><p className="mt-6 max-w-lg text-sm leading-7 text-white/50">Enter THE HUMAN CORE. A particle world shaped by your words. Leave a thought. Change its rhythm.</p><Link href="/talk" className="mt-8 inline-flex rounded-full bg-lime-300 px-7 py-4 text-xs font-bold tracking-[.2em] text-black hover:bg-lime-200">ENTER THE CORE ↗</Link></div>
+          <div aria-hidden="true" className="relative mx-auto flex h-64 w-64 items-center justify-center rounded-full border border-lime-200/20 bg-[radial-gradient(circle,_#a3e63525,_transparent_70%)]"><div className="absolute h-48 w-48 rounded-full border border-lime-200/30"/><div className="h-32 w-32 rounded-full border border-lime-200/40 shadow-[0_0_65px_#a3e63530]"/><span className="absolute text-[10px] tracking-[.4em] text-lime-200">HUMAN CORE</span></div>
+        </div>
+      </section>
       {/* The Question Section */}
       <section className="relative min-h-screen flex flex-col items-center justify-center bg-black px-6 py-32">
         <div className="max-w-4xl w-full space-y-32">
