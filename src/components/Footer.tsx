@@ -18,7 +18,7 @@ export default function Footer() {
               THE HUMAN EXPERIMENT.
             </p>
             <div className="flex gap-6">
-              <a href="#" className="text-secondary hover:text-white transition-colors">
+              <a href="https://x.com/Rbhumanone" target="_blank" rel="noopener noreferrer" aria-label="HUMAN ONE on X" className="text-secondary hover:text-white transition-colors">
                 <Twitter className="w-5 h-5" />
               </a>
               <a href="#" className="text-secondary hover:text-white transition-colors">
@@ -45,7 +45,7 @@ export default function Footer() {
             <ul className="space-y-4">
               <li><Link href="/talk" className="text-[10px] tracking-[0.3em] text-secondary hover:text-white transition-colors uppercase">TALK</Link></li>
               <li><Link href="/archive" className="text-[10px] tracking-[0.3em] text-secondary hover:text-white transition-colors uppercase">ARCHIVE</Link></li>
-              <li><a href="#" className="text-[10px] tracking-[0.3em] text-secondary hover:text-white transition-colors uppercase">X / TWITTER</a></li>
+              <li><a href="https://x.com/Rbhumanone" target="_blank" rel="noopener noreferrer" className="text-[10px] tracking-[0.3em] text-secondary hover:text-white transition-colors uppercase">X / TWITTER</a></li>
               <li><a href="#" className="text-[10px] tracking-[0.3em] text-secondary hover:text-white transition-colors uppercase">DISCORD</a></li>
             </ul>
           </div>
