@@ -7,11 +7,11 @@ export interface GlobalStats {
 }
 
 export const globalStats: GlobalStats = {
-  humans: 0,
-  memories: 0,
-  fears: 0,
-  beliefs: 0,
-  dreams: 0,
+  humans: 15,
+  memories: 16,
+  fears: 19,
+  beliefs: 18,
+  dreams: 20,
 };
 
 export const questions = [
